@@ -5,11 +5,11 @@
 - program vyhotoven jako sluzba pro windows a linux, jako docker image
 - program bezi ve smycce 1 minuta
 - podminka pro prenos zakazek ze `zapsi2.terminal_input_order` do `zapsi2.fis_production`: zaznam ma
-  v `zapsi2.terminal_input_order.DTS` mladsi jak 1440 minut od aktualniho casu
+  v `zapsi2.terminal_input_order.DTS` mladsi jak 1440 minut od aktualniho casu a DTE != null
 - podminka pro prenos prostoju z `zapsi2.terminal_input_idle` do `zapsi2.fis_production`: zaznam ma
-  v `zapsi2.terminal_input_idle.DTE` mladsi jak 1440 minut od aktualniho casu
+  v `zapsi2.terminal_input_idle.DTE` mladsi jak 1440 minut od aktualniho casu a DTE != null
 - podminka pro prenos stavu vypnuto z `zapsi2.workplace_state` do `zapsi2.fis_production`: zaznam ma
-  v `zapsi2.workplace.state.DTE` mladsi jak 1440 minut od aktualniho casu
+  v `zapsi2.workplace.state.DTE` mladsi jak 1440 minut od aktualniho casu a DTE != null
 - zmeny v tabulce zapsi2.fis_production oproti aktualnimu stavu
     - nove sloupce: `ZapsiId`, `IFS`, `Stav`, `Takt`, `Prostoj`, `TypProstoje`, `Chyba`
     - odstranene sloupce: `TerminalInputOrderId`, `IDVC`, `IDOper`
