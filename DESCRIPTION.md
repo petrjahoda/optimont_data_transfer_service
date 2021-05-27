@@ -83,7 +83,7 @@
 
 - vstupni tabulka: `zapsi2.terminal_input_order` 
 - vystupni tabulka: `zapsi2.fis_production`
-- pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.device`, `zapsi2.workplace`
+- pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.workplace`
 
 | zapsi2.terminal_input_order                      | zapsi2.fis_production      | 
 | ------------------------------------------------ |----------------------------|
