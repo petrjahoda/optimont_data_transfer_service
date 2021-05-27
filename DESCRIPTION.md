@@ -21,7 +21,7 @@
 - vystupni tabulka: `zapsi2.user`
 - parovaci vazba: `zapsi2.fis_user.IDZ - zapsi2.user.Login`
 
-| zapsi2.fis_user        | zapsi2.user           | 
+| READ zapsi2.fis_user   | WRITE zapsi2.user     | 
 | ---------------------- | --------------------- | 
 | IDZ                    | Login                 | 
 | Jmeno                  | FirstName             | 
@@ -44,10 +44,10 @@
 - vystupni tabulka: `zapsi2.product`
 - parovaci vazba: `zapsi2.fis_product.ArtNr - zapsi2.product.Barcode`
 
-| zapsi2.fis_product     | zapsi2.product        | 
-| ---------------------- | --------------------- |
-| ArtNr                  | Barcode               | 
-| Nazev + Velikost       | Name                  |
+| READ zapsi2.fis_product | WRITE zapsi2.product  | 
+| ----------------------- | --------------------- |
+| ArtNr                   | Barcode               | 
+| Nazev + Velikost        | Name                  |
 
 1. Pokud neexistuje produkt (nenalezena vazba ArtNr-Barcode), je vytvoren novy produkt v zapsi2.product:
     - Name
@@ -63,12 +63,12 @@
 - pomocna tabulka: `zapsi2.product`
 - parovaci vazba: `zapsi2.fis_order.ID - zapsi2.order.Barcode`
 
-| zapsi2.fis_order       | zapsi2.order                                                                                                                           | 
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| ID                     | Barcode                                                                                                                                |  
-| IDVC                   | Name                                                                                                                                   | 
-| IDVM                   | ProductID: zapsi2.fis_order.IDVM == zapsi2.fis_product_IDVM -> zapsi2.fis_product.ArtNr == zapsi2.product.Barcode -> zapsi2.product.ID | 
-| Mnozstvi               | CountRequested                                                                                                                         | 
+| READ zapsi2.fis_order                                                                                      | WRITE zapsi2.order | 
+| ---------------------------------------------------------------------------------------------------------- | ------------------ |
+| ID                                                                                                         | Barcode            |  
+| IDVC                                                                                                       | Name               | 
+| IDVM == zapsi2.fis_product_IDVM -> zapsi2.fis_product.ArtNr == zapsi2.product.Barcode -> zapsi2.product.ID | ProductID          | 
+| Mnozstvi                                                                                                   | CountRequested     | 
 
 1. Pokud neexistuje zakazka (nenalezena vazba ID-Barcode), je vytvorena nova zakazka v zapsi2.order:
     - Name
@@ -86,24 +86,24 @@
 - vystupni tabulka: `zapsi2.fis_production`
 - pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.workplace`
 
-| zapsi2.terminal_input_order                      | zapsi2.fis_production      | 
-| ------------------------------------------------ | -------------------------- |
-| OID                                              | ZapsiId                    |  
-| DTS                                              | DatumCasOd                 | 
-| DTE                                              | DatumCasDo                 | 
-| UserID == user.ID -> user.Login                  | ***IDZ                     | 
-| DeviceID == workplace.DeviceId -> workplace.Code | IFS                        | 
-| OrderID == order.ID -> order.Barcode             | ****IDFis                  | 
-| Count-Fail                                       | MnozstviOK                 | 
-| Fail                                             | MnozstviNOK                | 
-| Note                                             | KgOK                       | 
-| null                                             | KgNOK                      | 
-| "a"                                              | Stav                       | 
-| AverageCycle                                     | Takt                       | 
-| null                                             | Prostoj                    |
-| null                                             | TypProstoje                |
-| null                                             | Prenos                     | 
-| Pomocny retezec                                  | *****Chyba                 | 
+| READ zapsi2.terminal_input_order                 | WRITE zapsi2.fis_production | 
+| ------------------------------------------------ | --------------------------- |
+| OID                                              | ZapsiId                     |  
+| DTS                                              | DatumCasOd                  | 
+| DTE                                              | DatumCasDo                  | 
+| UserID == user.ID -> user.Login                  | ***IDZ                      | 
+| DeviceID == workplace.DeviceId -> workplace.Code | IFS                         | 
+| OrderID == order.ID -> order.Barcode             | ****IDFis                   | 
+| Count-Fail                                       | MnozstviOK                  | 
+| Fail                                             | MnozstviNOK                 | 
+| Note                                             | KgOK                        | 
+| null                                             | KgNOK                       | 
+| "a"                                              | Stav                        | 
+| AverageCycle                                     | Takt                        | 
+| null                                             | Prostoj                     |
+| null                                             | TypProstoje                 |
+| null                                             | Prenos                      | 
+| Pomocny retezec                                  | *****Chyba                  | 
 
 *** pokud neni prirazeno userId pro terminalInputOrder, vlozi se null<br>
 *** pokud je prirazeno userId pro terminalInputOrder, ale jeho `zapsi2.user.Login` neni nalezeno va tabulce
@@ -121,24 +121,24 @@ kontrole
 - pomocne tabulky: `zapsi2.user`, `zapsi2.idle`, `zapsi2.idle_type`,`terminal_input_order_terminal_input_idle`
   , `zapsi2.workplace`
 
-| zapsi2.terminal_input_idle                                                                                                                                                                                                   | zapsi2.fis_production      | 
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| OID                                                                                                                                                                                                                          | ZapsiId                    |  
-| DTS                                                                                                                                                                                                                          | DatumCasOd                 | 
-| DTE                                                                                                                                                                                                                          | DatumCasDo                 | 
-| UserID == user.ID -> user.Login                                                                                                                                                                                              | ***IDZ                     | 
-| DeviceID == workplace.DeviceId -> workplace.Code                                                                                                                                                                             | IFS                        | 
-| ID == terminal_input_order_terminal_input_idle.TerminalInputIdleID -> terminal_input_order_terminal_input_idle.TerminalInputOrderID == terminal_input_order.ID ->  terminal_input_order.OrderID == Order.ID -> Order.Barcode | ****IDFis                  | 
-| null                                                                                                                                                                                                                         | MnozstviOK                 | 
-| null                                                                                                                                                                                                                         | MnozstviNOK                | 
-| null                                                                                                                                                                                                                         | KgOK                       | 
-| null                                                                                                                                                                                                                         | KgNOK                      | 
-| "p"                                                                                                                                                                                                                          | Stav                       | 
-| null                                                                                                                                                                                                                         | Takt                       | 
-| IdleId == idle.ID -> idle.Name                                                                                                                                                                                               | Prostoj                    |
-| IdleId == idle.ID -> idle.IdleTypeID == idle_type.ID -> idle_type.Name                                                                                                                                                       | TypProstoje                |
-| null                                                                                                                                                                                                                         | Prenos                     | 
-| Pomocny retezec                                                                                                                                                                                                              | *****Chyba                 | 
+| READ zapsi2.terminal_input_idle                                                                                                                                                                                              | WRITE zapsi2.fis_production | 
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| OID                                                                                                                                                                                                                          | ZapsiId                     |  
+| DTS                                                                                                                                                                                                                          | DatumCasOd                  | 
+| DTE                                                                                                                                                                                                                          | DatumCasDo                  | 
+| UserID == user.ID -> user.Login                                                                                                                                                                                              | ***IDZ                      | 
+| DeviceID == workplace.DeviceId -> workplace.Code                                                                                                                                                                             | IFS                         | 
+| ID == terminal_input_order_terminal_input_idle.TerminalInputIdleID -> terminal_input_order_terminal_input_idle.TerminalInputOrderID == terminal_input_order.ID ->  terminal_input_order.OrderID == Order.ID -> Order.Barcode | ****IDFis                   | 
+| null                                                                                                                                                                                                                         | MnozstviOK                  | 
+| null                                                                                                                                                                                                                         | MnozstviNOK                 | 
+| null                                                                                                                                                                                                                         | KgOK                        | 
+| null                                                                                                                                                                                                                         | KgNOK                       | 
+| "p"                                                                                                                                                                                                                          | Stav                        | 
+| null                                                                                                                                                                                                                         | Takt                        | 
+| IdleId == idle.ID -> idle.Name                                                                                                                                                                                               | Prostoj                     |
+| IdleId == idle.ID -> idle.IdleTypeID == idle_type.ID -> idle_type.Name                                                                                                                                                       | TypProstoje                 |
+| null                                                                                                                                                                                                                         | Prenos                      | 
+| Pomocny retezec                                                                                                                                                                                                              | *****Chyba                  | 
 
 *** pokud neni prirazeno userId pro terminalInputOrder, vlozi se null<br>
 *** pokud je prirazeno userId pro terminalInputOrder, ale jeho `zapsi2.user.Login` neni nalezeno va tabulce
@@ -155,21 +155,21 @@ kontrole
 - vystupni tabulka: `zapsi2.fis_production`
 - pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.device`, `zapsi2.workplace`
 
-| zapsi2.workplace_state                           | zapsi2.fis_production      | 
-| ------------------------------------------------ | -------------------------- |
-| OID                                              | ZapsiId                    |  
-| DTS                                              | DatumCasOd                 | 
-| DTE                                              | DatumCasDo                 | 
-| null                                             | IDZ                        | 
-| WorkplaceId == workplace.ID -> workplace.Code    | IFS                        | 
-| null                                             | IDFis                      | 
-| null                                             | MnozstviOK                 | 
-| null                                             | MnozstviNOK                | 
-| null                                             | KgOK                       | 
-| null                                             | KgNOK                      | 
-| "v"                                              | Stav                       | 
-| null                                             | Takt                       | 
-| null                                             | Prostoj                    |
-| null                                             | TypProstoje                |
-| null                                             | Prenos                     | 
-| null                                             | Chyba                      |
+| READ zapsi2.workplace_state                      | WRITE zapsi2.fis_production | 
+| ------------------------------------------------ | --------------------------- |
+| OID                                              | ZapsiId                     |  
+| DTS                                              | DatumCasOd                  | 
+| DTE                                              | DatumCasDo                  | 
+| null                                             | IDZ                         | 
+| WorkplaceId == workplace.ID -> workplace.Code    | IFS                         | 
+| null                                             | IDFis                       | 
+| null                                             | MnozstviOK                  | 
+| null                                             | MnozstviNOK                 | 
+| null                                             | KgOK                        | 
+| null                                             | KgNOK                       | 
+| "v"                                              | Stav                        | 
+| null                                             | Takt                        | 
+| null                                             | Prostoj                     |
+| null                                             | TypProstoje                 |
+| null                                             | Prenos                      | 
+| null                                             | Chyba                       |
