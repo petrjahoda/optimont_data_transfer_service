@@ -81,7 +81,7 @@
 
 ## EXPORT ZAKAZEK ZE ZAPSI
 
-- vstupni tabulky: `zapsi2.terminal_input_order` 
+- vstupni tabulka: `zapsi2.terminal_input_order` 
 - vystupni tabulka: `zapsi2.fis_production`
 - pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.device`, `zapsi2.workplace`
 
@@ -113,7 +113,7 @@
 
 ## EXPORT PROSTOJU ZE ZAPSI
 
-- vstupni tabulky: `zapsi2.terminal_input_idle`
+- vstupni tabulka: `zapsi2.terminal_input_idle`
 - vystupni tabulka: `zapsi2.fis_production`
 - pomocne tabulky: `zapsi2.user`, `zapsi2.idle`, `zapsi2.idle_type`, `zapsi2.device`, `zapsi2.workplace`
 
@@ -144,7 +144,7 @@
 
 ## EXPORT STAVU VYPNUTO ZE ZAPSI
 
-- vstupni tabulky: `zapsi2.workplace_state`
+- vstupni tabulka: `zapsi2.workplace_state`
 - vystupni tabulka: `zapsi2.fis_production`
 - pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.device`, `zapsi2.workplace`
 
