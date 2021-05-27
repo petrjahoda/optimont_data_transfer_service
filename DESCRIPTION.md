@@ -117,24 +117,24 @@
 - vystupni tabulka: `zapsi2.fis_production`
 - pomocne tabulky: `zapsi2.user`, `zapsi2.idle`, `zapsi2.idle_type`, `zapsi2.device`, `zapsi2.workplace`
 
-| zapsi2.terminal_input_idle       | zapsi2.fis_production      | 
-| -------------------------------- |----------------------------|
-| OID                              | ZapsiId                    |  
-| DTS                              | DatumCasOd                 | 
-| DTE                              | DatumCasDo                 | 
-| UserID -> user.Login             | ***IDZ                     | 
-| DeviceID -> workplace.Code       | IFS                        | 
-| OrderID -> order.Barcode         | ****IDFis                  | 
-| null                             | MnozstviOK                 | 
-| null                             | MnozstviNOK                | 
-| null                             | KgOK                       | 
-| null                             | KgNOK                      | 
-| "p"                              | Stav                       | 
-| null                             | Takt                       | 
-| Name                             | Prostoj                    |
-| idleTypeID -> idle_type.Name     | TypProstoje                |
-| null                             | Prenos                     | 
-| Pomocny retezec                  | *****Chyba                 | 
+| zapsi2.terminal_input_idle                      | zapsi2.fis_production      | 
+| ----------------------------------------------- |----------------------------|
+| OID                                             | ZapsiId                    |  
+| DTS                                             | DatumCasOd                 | 
+| DTE                                             | DatumCasDo                 | 
+| UserID -> user.Login                            | ***IDZ                     | 
+| DeviceID -> workplace.Code                      | IFS                        | 
+| OrderID -> order.Barcode                        | ****IDFis                  | 
+| null                                            | MnozstviOK                 | 
+| null                                            | MnozstviNOK                | 
+| null                                            | KgOK                       | 
+| null                                            | KgNOK                      | 
+| "p"                                             | Stav                       | 
+| null                                            | Takt                       | 
+| IdleId -> idle.Name                             | Prostoj                    |
+| IdleId -> idle.IdleTypeID -> idle_type.Name     | TypProstoje                |
+| null                                            | Prenos                     | 
+| Pomocny retezec                                 | *****Chyba                 | 
 
 *** pokud neni prirazeno userId pro terminalInputOrder, vlozi se null<br>
 *** pokud je prirazeno userId pro terminalInputOrder, ale jeho `zapsi2.user.Login` neni nalezeno va tabulce jako `zapsi2.fis_user.IDZ`, vlozi se 0 a pomocny retezec se aktualizuje o hodnotu `zapsi2.user.Login`<br>
