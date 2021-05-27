@@ -85,24 +85,24 @@
 - vystupni tabulka: `zapsi2.fis_production`
 - pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.device`, `zapsi2.workplace`
 
-| zapsi2.terminal_input_order      | zapsi2.fis_production      | 
-| -------------------------------- |----------------------------|
-| OID                              | ZapsiId                    |  
-| DTS                              | DatumCasOd                 | 
-| DTE                              | DatumCasDo                 | 
-| UserID -> user.Login             | ***IDZ                     | 
-| DeviceID -> workplace.Code       | IFS                        | 
-| OrderID -> order.Barcode         | ****IDFis                  | 
-| Count-Fail                       | MnozstviOK                 | 
-| Fail                             | MnozstviNOK                | 
-| Note                             | KgOK                       | 
-| null                             | KgNOK                      | 
-| "a"                              | Stav                       | 
-| AverageCycle                     | Takt                       | 
-| null                             | Prostoj                    |
-| null                             | TypProstoje                |
-| null                             | Prenos                     | 
-| Pomocny retezec                  | *****Chyba                 | 
+| zapsi2.terminal_input_order                                         | zapsi2.fis_production      | 
+| ------------------------------------------------------------------- |----------------------------|
+| OID                                                                 | ZapsiId                    |  
+| DTS                                                                 | DatumCasOd                 | 
+| DTE                                                                 | DatumCasDo                 | 
+| UserID -> user.Login                                                | ***IDZ                     | 
+| DeviceID -> device.ID == workplace.DeviceId -> workplace.Code       | IFS                        | 
+| OrderID -> order.Barcode                                            | ****IDFis                  | 
+| Count-Fail                                                          | MnozstviOK                 | 
+| Fail                                                                | MnozstviNOK                | 
+| Note                                                                | KgOK                       | 
+| null                                                                | KgNOK                      | 
+| "a"                                                                 | Stav                       | 
+| AverageCycle                                                        | Takt                       | 
+| null                                                                | Prostoj                    |
+| null                                                                | TypProstoje                |
+| null                                                                | Prenos                     | 
+| Pomocny retezec                                                     | *****Chyba                 | 
 
 *** pokud neni prirazeno userId pro terminalInputOrder, vlozi se null<br>
 *** pokud je prirazeno userId pro terminalInputOrder, ale jeho `zapsi2.user.Login` neni nalezeno va tabulce jako `zapsi2.fis_user.IDZ`, vlozi se 0 a pomocny retezec se aktualizuje o hodnotu `zapsi2.user.Login`<br>
