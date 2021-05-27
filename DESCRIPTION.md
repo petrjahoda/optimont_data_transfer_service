@@ -14,7 +14,7 @@
 
 - vstupni tabulka: `zapsi2.fis_user`
 - vystupni tabulka: `zapsi2.user`
-- parovaci vazba: `zapsi2.fis_user.IDS - zapsi2.user.Login`
+- parovaci vazba: `zapsi2.fis_user.IDZ - zapsi2.user.Login`
 
 | zapsi2.fis_user        | zapsi2.user           | 
 | ---------------------- |-----------------------| 
