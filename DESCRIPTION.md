@@ -63,12 +63,12 @@
 - pomocna tabulka: `zapsi2.product`
 - parovaci vazba: `zapsi2.fis_order.ID - zapsi2.order.Barcode`
 
-| zapsi2.fis_order       | zapsi2.order                                                                                                                | 
-| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| ID                     | Barcode                                                                                                                     |  
-| IDVC                   | Name                                                                                                                        | 
-| IDVM                   | zapsi2.fis_order.IDVM == zapsi2.fis_product_IDVM -> zapsi2.fis_product.ArtNr == zapsi2.product.Barcode -> zapsi2.product.ID | 
-| Mnozstvi               | CountRequested                                                                                                              | 
+| zapsi2.fis_order       | zapsi2.order                                                                                                                           | 
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| ID                     | Barcode                                                                                                                                |  
+| IDVC                   | Name                                                                                                                                   | 
+| IDVM                   | ProductID: zapsi2.fis_order.IDVM == zapsi2.fis_product_IDVM -> zapsi2.fis_product.ArtNr == zapsi2.product.Barcode -> zapsi2.product.ID | 
+| Mnozstvi               | CountRequested                                                                                                                         | 
 
 1. Pokud neexistuje zakazka (nenalezena vazba ID-Barcode), je vytvorena nova zakazka v zapsi2.order:
     - Name
