@@ -65,6 +65,7 @@
 | IDVC                   | Name                  | 
 | IDVM                   | ***ProductId          | 
 | Mnozstvi               | CountRequested        | 
+
 *** ulozeno `zapsi2.product.ID` skrze parovaci vazbu `zapsi2.fis_order.IDVM` na `zapsi2.fis_product_IDVM` a pote `zapsi2.fis_product.ArtNr` na `zapsi2.product.Barcode`
 
 
