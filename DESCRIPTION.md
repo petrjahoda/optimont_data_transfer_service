@@ -9,7 +9,7 @@
 - zmeny v tabulky zapsi2.fis_production oproti aktualnimu stavu
     - nove sloupce: `ZapsiId`, `IFS`, `Stav`, `Takt`, `Prostoj`, `TypProstoje`, `Chyba`
     - odstranene sloupce: `TerminalInputOrderId`, `IDVC`, `IDOper`
-    
+<br><br>
 ## IMPORT UZIVATELU DO ZAPSI
 
 - vstupni tabulka: `zapsi2.fis_user`
