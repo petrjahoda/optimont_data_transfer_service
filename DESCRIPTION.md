@@ -91,7 +91,7 @@
 | DTS                              | DatumCasOd                 | 
 | DTE                              | DatumCasDo                 | 
 | UserID -> user.Login             | ***IDZ                     | 
-| deviceID -> workplace.Code       | IFS                        | 
+| DeviceID -> workplace.Code       | IFS                        | 
 | OrderID -> order.Barcode         | ****IDFis                  | 
 | Count-Fail                       | MnozstviOK                 | 
 | Fail                             | MnozstviNOK                | 
@@ -123,7 +123,7 @@
 | DTS                              | DatumCasOd                 | 
 | DTE                              | DatumCasDo                 | 
 | UserID -> user.Login             | ***IDZ                     | 
-| deviceID -> workplace.Code       | IFS                        | 
+| DeviceID -> workplace.Code       | IFS                        | 
 | OrderID -> order.Barcode         | ****IDFis                  | 
 | null                             | MnozstviOK                 | 
 | null                             | MnozstviNOK                | 
@@ -154,7 +154,7 @@
 | DTS                              | DatumCasOd                 | 
 | DTE                              | DatumCasDo                 | 
 | null                             | IDZ                        | 
-| deviceID -> workplace.Code       | IFS                        | 
+| DeviceID -> workplace.Code       | IFS                        | 
 | null                             | IDFis                      | 
 | null                             | MnozstviOK                 | 
 | null                             | MnozstviNOK                | 
