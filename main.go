@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const version = "2021.2.3.23"
+const version = "2021.2.3.29"
 const serviceName = "Optimont data transfer service"
 const serviceDescription = "Transfers data between zapsi and optimont tables"
 
@@ -76,6 +76,7 @@ func (p *program) run() {
 		importUsersToZapsi(db)
 		importProductsToZapsi(db)
 		importOrdersToZapsi(db)
+
 		exportOrdersFromZapsi(db)
 		exportIdlesFromZapsi(db)
 		exportStatePowerOffFromZapsi(db)
