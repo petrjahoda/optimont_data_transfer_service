@@ -50,7 +50,7 @@
 | READ zapsi2.fis_product | WRITE zapsi2.product  | 
 | ----------------------- | --------------------- |
 | ArtNr                   | Barcode               | 
-| Nazev + Velikost        | Name                  |
+| Nazev + " " +Velikost   | Name                  |
 
 1. Pokud neexistuje produkt (nenalezena vazba ArtNr-Barcode), je vytvoren novy produkt v zapsi2.product:
     - Name

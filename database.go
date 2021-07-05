@@ -125,7 +125,7 @@ type TerminalInputOrder struct {
 	ExtDT           sql.NullTime
 }
 
-func (Order) TerminalInputOrder() string {
+func (TerminalInputOrder) TableName() string {
 	return "terminal_input_order"
 }
 
@@ -144,7 +144,7 @@ type TerminalInputIdle struct {
 	ExtDT    sql.NullTime
 }
 
-func (Order) TerminalInputIdle() string {
+func (TerminalInputIdle) TableName() string {
 	return "terminal_input_idle"
 }
 
@@ -155,7 +155,7 @@ type Workplace struct {
 	Code     string
 }
 
-func (Order) Workplace() string {
+func (Workplace) TableName() string {
 	return "workplace"
 }
 
@@ -164,7 +164,7 @@ type TerminalInputOrderIdle struct {
 	TerminalInputIdleID  int
 }
 
-func (Order) TerminalInputOrderIdle() string {
+func (TerminalInputOrderIdle) TableName() string {
 	return "terminal_input_order_terminal_input_idle"
 }
 
@@ -174,7 +174,7 @@ type Idle struct {
 	IdleTypeID int
 }
 
-func (Order) Idle() string {
+func (Idle) TableName() string {
 	return "idle"
 }
 
@@ -183,7 +183,7 @@ type IdleType struct {
 	Name string
 }
 
-func (Order) IdleType() string {
+func (IdleType) TableName() string {
 	return "idle_type"
 }
 
@@ -196,6 +196,6 @@ type WorkplaceState struct {
 	WorkplaceID int
 }
 
-func (Order) WorkplaceState() string {
+func (WorkplaceState) TableName() string {
 	return "workplace_state"
 }
