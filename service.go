@@ -13,7 +13,7 @@ func exportStatePowerOffFromZapsi(db *gorm.DB) {
 	db.Where("StateID = 3").Where("dte is not null and dte > ?, ", time.Now().Add(-24*time.Hour)).Find(&workplaceStates)
 	var fisProductionOfflines []FisProduction
 	db.Where("stav like 'v'").Find(&fisProductionOfflines)
-	var cachedFisProductionOfflines map[int]FisProduction
+	cachedFisProductionOfflines := make(map[int]FisProduction)
 	for _, fisProductionOffline := range fisProductionOfflines {
 		cachedFisProductionOfflines[fisProductionOffline.ZapsiId] = fisProductionOffline
 	}
@@ -43,7 +43,7 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 	db.Where("dte is not null and dte > ?, ", time.Now().Add(-24*time.Hour)).Find(&terminalInputIdles)
 	var fisProductionIdles []FisProduction
 	db.Where("stav like 'p'").Find(&fisProductionIdles)
-	var cachedFisProductionIdles map[int]FisProduction
+	cachedFisProductionIdles := make(map[int]FisProduction)
 	for _, fisProductionIdle := range fisProductionIdles {
 		cachedFisProductionIdles[fisProductionIdle.ZapsiId] = fisProductionIdle
 	}
@@ -109,7 +109,7 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 	db.Where("dte is not null and dte > ?, ", time.Now().Add(-24*time.Hour)).Find(&terminalInputOrders)
 	var fisProductionOrders []FisProduction
 	db.Where("stav like 'a'").Find(&fisProductionOrders)
-	var cachedFisProductionOrders map[int]FisProduction
+	cachedFisProductionOrders := make(map[int]FisProduction)
 	for _, fisProductionOrder := range fisProductionOrders {
 		cachedFisProductionOrders[fisProductionOrder.ZapsiId] = fisProductionOrder
 	}
@@ -171,7 +171,7 @@ func importOrdersToZapsi(db *gorm.DB) {
 	var orders []Order
 	db.Find(&orders)
 	logInfo("MAIN", "Downloaded "+strconv.Itoa(len(orders))+" zapsi orders")
-	var ordersMap map[string]Order
+	ordersMap := make(map[string]Order)
 	for _, order := range orders {
 		ordersMap[order.Barcode] = order
 	}
@@ -180,7 +180,7 @@ func importOrdersToZapsi(db *gorm.DB) {
 	for _, fisOrder := range fisOrders {
 		order, orderInZapsi := ordersMap[strconv.Itoa(fisOrder.ID)]
 		if orderInZapsi {
-			logInfo("MAIN", strconv.Itoa(fisOrder.ID)+": updating order name to "+fisOrder.IDVC+" and count requested to "+strconv.Itoa(fisOrder.Mnozstvi))
+			//logInfo("MAIN", strconv.Itoa(fisOrder.ID)+": updating order name to "+fisOrder.IDVC+" and count requested to "+strconv.Itoa(fisOrder.Mnozstvi))
 			var updateOrder Order
 			db.Where("OID = ?", order.OID).Find(&updateOrder)
 			updateOrder.Name = fisOrder.IDVC
@@ -189,23 +189,23 @@ func importOrdersToZapsi(db *gorm.DB) {
 			//db.Save(&updateOrder)
 			noOfUpdatedOrders++
 		} else {
-			logInfo("MAIN", strconv.Itoa(fisOrder.ID)+": adding new order with name "+fisOrder.IDVC+" and count requested "+strconv.Itoa(fisOrder.Mnozstvi))
 			var fisProduct FisProduct
 			db.Where("IDVM = ?", fisOrder.IDVM).Find(&fisProduct)
-			logInfo("MAIN", strconv.Itoa(fisOrder.ID)+": found fis product with ArtNr "+fisProduct.ArtNr)
-			var product Product
-			db.Where("barcode = ?", fisProduct.ArtNr).Find(&product)
-			logInfo("MAIN", strconv.Itoa(fisOrder.ID)+": found zapsi product with Barcode "+product.Barcode)
-			var newOrder Order
-			newOrder.Name = fisOrder.IDVC
-			newOrder.Barcode = strconv.Itoa(fisOrder.ID)
-			newOrder.ProductID = product.OID
-			newOrder.OrderStatusId = 1
-			newOrder.CountRequested = fisOrder.Mnozstvi
-			newOrder.Cavity = 1
-			// TODO: enable save
-			//db.Save(&newOrder)
-			noOfInsertedOrders++
+			if fisProduct.IDVM > 0 {
+				logInfo("MAIN", strconv.Itoa(fisOrder.ID)+": adding new order with name "+fisOrder.IDVC+" and count requested "+strconv.Itoa(fisOrder.Mnozstvi))
+				var product Product
+				db.Where("barcode = ?", fisProduct.ArtNr).Find(&product)
+				var newOrder Order
+				newOrder.Name = fisOrder.IDVC
+				newOrder.Barcode = strconv.Itoa(fisOrder.ID)
+				newOrder.ProductID = product.OID
+				newOrder.OrderStatusId = 1
+				newOrder.CountRequested = fisOrder.Mnozstvi
+				newOrder.Cavity = 1
+				// TODO: enable save
+				//db.Save(&newOrder)
+				noOfInsertedOrders++
+			}
 		}
 	}
 	logInfo("MAIN", "Updated "+strconv.Itoa(noOfUpdatedOrders)+" orders, inserted "+strconv.Itoa(noOfInsertedOrders)+" orders")
@@ -221,7 +221,7 @@ func importProductsToZapsi(db *gorm.DB) {
 	var products []Product
 	db.Find(&products)
 	logInfo("MAIN", "Downloaded "+strconv.Itoa(len(products))+" zapsi products")
-	var productsMap map[string]Product
+	productsMap := make(map[string]Product)
 	for _, product := range products {
 		productsMap[product.Barcode] = product
 	}
@@ -230,7 +230,7 @@ func importProductsToZapsi(db *gorm.DB) {
 	for _, fisProduct := range fisProducts {
 		product, productInZapsi := productsMap[fisProduct.ArtNr]
 		if productInZapsi {
-			logInfo("MAIN", fisProduct.ArtNr+": updating product name to "+fisProduct.Nazev)
+			//logInfo("MAIN", fisProduct.ArtNr+": updating product name to "+fisProduct.Nazev)
 			var updateProduct Product
 			db.Where("OID = ?", product.OID).Find(&updateProduct)
 			updateProduct.Name = fisProduct.Nazev
@@ -263,7 +263,7 @@ func importUsersToZapsi(db *gorm.DB) {
 	var users []User
 	db.Find(&users)
 	logInfo("MAIN", "Downloaded "+strconv.Itoa(len(users))+" zapsi users")
-	var usersMap map[string]User
+	usersMap := make(map[string]User)
 	for _, user := range users {
 		usersMap[user.Login] = user
 	}
@@ -272,7 +272,7 @@ func importUsersToZapsi(db *gorm.DB) {
 	for _, fisUser := range fisUsers {
 		user, userInZapsi := usersMap[strconv.Itoa(fisUser.IDZ)]
 		if userInZapsi {
-			logInfo("MAIN", "["+strconv.Itoa(fisUser.IDZ)+"] "+fisUser.Jmeno+" "+fisUser.Prijmeni+": updating user with rfid "+fisUser.Rfid)
+			//logInfo("MAIN", "["+strconv.Itoa(fisUser.IDZ)+"] "+fisUser.Jmeno+" "+fisUser.Prijmeni+": updating user with rfid "+fisUser.Rfid)
 			var updateUser User
 			db.Where("OID = ?", user.OID).Find(&updateUser)
 			updateUser.Rfid = fisUser.Rfid

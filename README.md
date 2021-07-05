@@ -156,7 +156,7 @@ kontrole
 
 - vstupni tabulka: `zapsi2.workplace_state`
 - vystupni tabulka: `zapsi2.fis_production`
-- pomocne tabulky: `zapsi2.user`, `zapsi2.order`, `zapsi2.device`, `zapsi2.workplace`
+- pomocne tabulky: `zapsi2.workplace`
 
 | READ zapsi2.workplace_state                      | WRITE zapsi2.fis_production | 
 | ------------------------------------------------ | --------------------------- |
