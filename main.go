@@ -63,8 +63,6 @@ func (p *program) run() {
 		start := time.Now()
 		logInfo("MAIN", serviceName+" ["+version+"] running")
 		db, err := gorm.Open(mysql.Open(config), &gorm.Config{})
-		sqlDB, _ := db.DB()
-		defer sqlDB.Close()
 		if err != nil {
 			logError("MAIN", "Problem opening database: "+err.Error())
 			sleepTime := downloadInSeconds*time.Second - time.Since(start)
@@ -73,13 +71,14 @@ func (p *program) run() {
 			processRunning = false
 			continue
 		}
+		sqlDB, _ := db.DB()
 		importUsersToZapsi(db)
 		importProductsToZapsi(db)
 		importOrdersToZapsi(db)
-
 		exportOrdersFromZapsi(db)
 		exportIdlesFromZapsi(db)
 		exportStatePowerOffFromZapsi(db)
+		sqlDB.Close()
 		sleepTime := downloadInSeconds*time.Second - time.Since(start)
 		logInfo("MAIN", "Sleeping for "+sleepTime.String())
 		time.Sleep(sleepTime)
