@@ -5,7 +5,7 @@
 - program vyhotoven jako sluzba pro windows a linux, jako docker image
 - program bezi ve smycce 1 minuta
 - podminka pro prenos zakazek ze `zapsi2.terminal_input_order` do `zapsi2.fis_production`:
-    - zaznam ma  v `zapsi2.terminal_input_order.DTS` mladsi jak 1440 minut od aktualniho casu a DTE != null
+    - zaznam ma  v `zapsi2.terminal_input_order.DTE` mladsi jak 1440 minut od aktualniho casu a DTE != null
     - id zaznamu neexistuje v tabulce zapsi2.fis_production
 - podminka pro prenos prostoju z `zapsi2.terminal_input_idle` do `zapsi2.fis_production`:
     - zaznam ma v `zapsi2.terminal_input_idle.DTE` mladsi jak 1440 minut od aktualniho casu a DTE != null
