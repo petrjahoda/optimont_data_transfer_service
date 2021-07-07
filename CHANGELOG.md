@@ -14,6 +14,12 @@ to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2021.3.1.7] - 2021-07-07
+
+### Fixed
+
+- Update and Create commands instead of Save commands
+
 ## [2021.3.1.5] - 2021-07-05
 
 ### Added

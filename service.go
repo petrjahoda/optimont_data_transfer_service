@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"gorm.io/gorm"
 	"strconv"
 	"time"
@@ -15,22 +16,21 @@ func exportStatePowerOffFromZapsi(db *gorm.DB) {
 	db.Where("stav like 'v'").Find(&fisProductionOfflines)
 	cachedFisProductionOfflines := make(map[int]FisProduction)
 	for _, fisProductionOffline := range fisProductionOfflines {
-		cachedFisProductionOfflines[fisProductionOffline.ZapsiId] = fisProductionOffline
+		cachedFisProductionOfflines[int(fisProductionOffline.ZapsiId.Int32)] = fisProductionOffline
 	}
 	for _, workplaceState := range workplaceStates {
 		_, stateExported := cachedFisProductionOfflines[workplaceState.OID]
 		if !stateExported {
 			logInfo("MAIN", "Exporting new state with OID "+strconv.Itoa(workplaceState.OID))
 			var fisProduction FisProduction
-			fisProduction.ZapsiId = workplaceState.OID
+			fisProduction.ZapsiId = sql.NullInt32{Int32: int32(workplaceState.OID), Valid: true}
 			fisProduction.DatumCasOd = workplaceState.DTS
 			fisProduction.DatumCasDo = workplaceState.DTE.Time
 			var workplace Workplace
-			db.Where("DeviceId = ?", workplaceState.WorkplaceID).Find(&workplace)
-			fisProduction.IFS = workplace.Code
-			fisProduction.Stav = "v"
-			// TODO: enable save
-			//db.Save(&fisProduction)
+			db.Where("OID = ?", workplaceState.WorkplaceID).Find(&workplace)
+			fisProduction.IFS = sql.NullString{String: workplace.Code, Valid: true}
+			fisProduction.Stav = sql.NullString{String: "v", Valid: true}
+			db.Create(&fisProduction)
 		}
 	}
 	logInfo("MAIN", "Exporting poweroff states ended in "+time.Since(start).String())
@@ -45,14 +45,14 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 	db.Where("stav like 'p'").Find(&fisProductionIdles)
 	cachedFisProductionIdles := make(map[int]FisProduction)
 	for _, fisProductionIdle := range fisProductionIdles {
-		cachedFisProductionIdles[fisProductionIdle.ZapsiId] = fisProductionIdle
+		cachedFisProductionIdles[int(fisProductionIdle.ZapsiId.Int32)] = fisProductionIdle
 	}
 	for _, terminalInputIdle := range terminalInputIdles {
 		_, idleExported := cachedFisProductionIdles[terminalInputIdle.OID]
 		if !idleExported {
 			logInfo("MAIN", "Exporting new idle with OID "+strconv.Itoa(terminalInputIdle.OID))
 			var fisProduction FisProduction
-			fisProduction.ZapsiId = terminalInputIdle.OID
+			fisProduction.ZapsiId = sql.NullInt32{Int32: int32(terminalInputIdle.OID), Valid: true}
 			fisProduction.DatumCasOd = terminalInputIdle.DTS
 			fisProduction.DatumCasDo = terminalInputIdle.DTE.Time
 			var zapsiUser User
@@ -61,18 +61,19 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 				var fisUser FisUser
 				db.Where("IDZ = ?", zapsiUser.Login).Find(&fisUser)
 				if fisUser.IDZ > 0 {
-					fisProduction.IDZ = zapsiUser.Login
+					idz, _ := strconv.Atoi(zapsiUser.Login)
+					fisProduction.IDZ = sql.NullInt32{Int32: int32(idz), Valid: true}
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputIdle.OID)+" has user with login "+zapsiUser.Login+" that is not in fis table, error")
-					fisProduction.IDZ = "0"
-					fisProduction.Chyba = zapsiUser.Login
+					fisProduction.IDZ = sql.NullInt32{Valid: true}
+					fisProduction.Chyba = sql.NullString{String: zapsiUser.Login, Valid: true}
 				}
 			}
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputIdle.DeviceID).Find(&workplace)
-			fisProduction.IFS = workplace.Code
+			fisProduction.IFS = sql.NullString{String: workplace.Code, Valid: true}
 			var terminalInputOrderIdle TerminalInputOrderIdle
-			db.Where("TerminalInputIdleIdD = ?", terminalInputIdle.OID).Find(&terminalInputOrderIdle)
+			db.Where("TerminalInputIdleID = ?", terminalInputIdle.OID).Find(&terminalInputOrderIdle)
 			var terminalInputOrder TerminalInputOrder
 			db.Where("OID = ?", terminalInputOrderIdle.TerminalInputOrderID).Find(&terminalInputOrder)
 			var zapsiOrder Order
@@ -85,18 +86,17 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputOrder.OID)+" has order with barcode "+zapsiOrder.Barcode+" that is not in fis table, error")
 					fisProduction.IDFis = 0
-					fisProduction.Chyba = fisProduction.Chyba + "," + zapsiOrder.Barcode
+					fisProduction.Chyba = sql.NullString{String: fisProduction.Chyba.String + "," + zapsiOrder.Barcode, Valid: true}
 				}
 			}
-			fisProduction.Stav = "p"
+			fisProduction.Stav = sql.NullString{String: "p", Valid: true}
 			var idle Idle
 			db.Where("OID = ?", terminalInputIdle.IdleID).Find(&idle)
 			var idleType IdleType
 			db.Where("OID = ?", idle.IdleTypeID).Find(&idleType)
-			fisProduction.Prostoj = idle.Name
-			fisProduction.TypProstoje = idleType.Name
-			// TODO: enable save
-			//db.Save(&fisProduction)
+			fisProduction.Prostoj = sql.NullString{String: idle.Name, Valid: true}
+			fisProduction.TypProstoje = sql.NullString{String: idleType.Name, Valid: true}
+			db.Create(&fisProduction)
 		}
 	}
 	logInfo("MAIN", "Exporting idles ended in "+time.Since(start).String())
@@ -111,14 +111,14 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 	db.Where("stav like 'a'").Find(&fisProductionOrders)
 	cachedFisProductionOrders := make(map[int]FisProduction)
 	for _, fisProductionOrder := range fisProductionOrders {
-		cachedFisProductionOrders[fisProductionOrder.ZapsiId] = fisProductionOrder
+		cachedFisProductionOrders[int(fisProductionOrder.ZapsiId.Int32)] = fisProductionOrder
 	}
 	for _, terminalInputOrder := range terminalInputOrders {
 		_, orderExported := cachedFisProductionOrders[terminalInputOrder.OID]
 		if !orderExported {
 			logInfo("MAIN", "Exporting new order with OID "+strconv.Itoa(terminalInputOrder.OID))
 			var fisProduction FisProduction
-			fisProduction.ZapsiId = terminalInputOrder.OID
+			fisProduction.ZapsiId = sql.NullInt32{Int32: int32(terminalInputOrder.OID), Valid: true}
 			fisProduction.DatumCasOd = terminalInputOrder.DTS
 			fisProduction.DatumCasDo = terminalInputOrder.DTE.Time
 			var zapsiUser User
@@ -127,16 +127,17 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 				var fisUser FisUser
 				db.Where("IDZ = ?", zapsiUser.Login).Find(&fisUser)
 				if fisUser.IDZ > 0 {
-					fisProduction.IDZ = zapsiUser.Login
+					idz, _ := strconv.Atoi(zapsiUser.Login)
+					fisProduction.IDZ = sql.NullInt32{Int32: int32(idz), Valid: true}
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputOrder.OID)+" has user with login "+zapsiUser.Login+" that is not in fis table, error")
-					fisProduction.IDZ = "0"
-					fisProduction.Chyba = zapsiUser.Login
+					fisProduction.IDZ = sql.NullInt32{Valid: true}
+					fisProduction.Chyba = sql.NullString{String: zapsiUser.Login, Valid: true}
 				}
 			}
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputOrder.DeviceID).Find(&workplace)
-			fisProduction.IFS = workplace.Code
+			fisProduction.IFS = sql.NullString{String: workplace.Code, Valid: true}
 			var zapsiOrder Order
 			db.Where("OID = ?", terminalInputOrder.OrderID).Find(&zapsiOrder)
 			if zapsiOrder.OID > 0 {
@@ -147,16 +148,16 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputOrder.OID)+" has order with barcode "+zapsiOrder.Barcode+" that is not in fis table, error")
 					fisProduction.IDFis = 0
-					fisProduction.Chyba = fisProduction.Chyba + "," + zapsiOrder.Barcode
+					fisProduction.Chyba = sql.NullString{String: fisProduction.Chyba.String + "," + zapsiOrder.Barcode, Valid: true}
 				}
 			}
-			fisProduction.MnozstviOK = int(terminalInputOrder.Count.Int32 - terminalInputOrder.Fail.Int32)
-			fisProduction.MnozstviNOK = int(terminalInputOrder.Fail.Int32)
-			fisProduction.KgOK, _ = strconv.Atoi(terminalInputOrder.Note.String)
-			fisProduction.Stav = "a"
-			fisProduction.Takt = terminalInputOrder.AverageCycle
-			// TODO: enable save
-			//db.Save(&fisProduction)
+			fisProduction.MnozstviOK = sql.NullInt32{Int32: terminalInputOrder.Count.Int32 - terminalInputOrder.Fail.Int32, Valid: true}
+			fisProduction.MnozstviNOK = sql.NullInt32{Int32: terminalInputOrder.Fail.Int32, Valid: true}
+			KgOK, _ := strconv.Atoi(terminalInputOrder.Note.String)
+			fisProduction.KgOK = sql.NullInt32{Int32: int32(KgOK), Valid: true}
+			fisProduction.Stav = sql.NullString{String: "a", Valid: true}
+			fisProduction.Takt = sql.NullFloat64{Float64: terminalInputOrder.AverageCycle, Valid: true}
+			db.Create(&fisProduction)
 		}
 	}
 	logInfo("MAIN", "Exporting orders ended in "+time.Since(start).String())
@@ -187,8 +188,7 @@ func importOrdersToZapsi(db *gorm.DB) {
 				db.Where("OID = ?", order.OID).Find(&updateOrder)
 				updateOrder.Name = fisOrder.IDVC
 				updateOrder.CountRequested = fisOrder.Mnozstvi
-				// TODO: enable save
-				//db.Save(&updateOrder)
+				db.Where("OID = ?", updateOrder.OID).Save(&updateOrder)
 				noOfUpdatedOrders++
 			} else {
 				noOfSameOrders++
@@ -204,11 +204,10 @@ func importOrdersToZapsi(db *gorm.DB) {
 				newOrder.Name = fisOrder.IDVC
 				newOrder.Barcode = strconv.Itoa(fisOrder.ID)
 				newOrder.ProductID = product.OID
-				newOrder.OrderStatusId = 1
+				newOrder.OrderStatusID = 1
 				newOrder.CountRequested = fisOrder.Mnozstvi
 				newOrder.Cavity = 1
-				// TODO: enable save
-				//db.Save(&newOrder)
+				db.Create(&newOrder)
 				noOfInsertedOrders++
 			}
 		}
@@ -241,8 +240,7 @@ func importProductsToZapsi(db *gorm.DB) {
 				var updateProduct Product
 				db.Where("OID = ?", product.OID).Find(&updateProduct)
 				updateProduct.Name = fisProduct.Nazev + " " + fisProduct.Velikost
-				// TODO: enable save
-				//db.Save(&updateProduct)
+				db.Where("OID = ?", updateProduct.OID).Save(&updateProduct)
 				noOfUpdatedProducts++
 			} else {
 				noOfSameProducts++
@@ -255,8 +253,7 @@ func importProductsToZapsi(db *gorm.DB) {
 			newProduct.Cycle = 0.0
 			newProduct.ProductStatusID = 1
 			newProduct.Deleted = 0
-			// TODO: enable save
-			//db.Save(&newProduct)
+			db.Create(&newProduct)
 			noOfInsertedProducts++
 		}
 	}
@@ -283,13 +280,12 @@ func importUsersToZapsi(db *gorm.DB) {
 	for _, fisUser := range fisUsers {
 		user, userInZapsi := usersMap[strconv.Itoa(fisUser.IDZ)]
 		if userInZapsi {
-			if user.Rfid != fisUser.Rfid {
+			if user.Rfid.String != fisUser.Rfid {
 				logInfo("MAIN", "["+strconv.Itoa(fisUser.IDZ)+"] "+fisUser.Jmeno+" "+fisUser.Prijmeni+": updating user with rfid "+fisUser.Rfid)
 				var updateUser User
 				db.Where("OID = ?", user.OID).Find(&updateUser)
-				updateUser.Rfid = fisUser.Rfid
-				// TODO: enable save
-				//db.Save(&updateUser)
+				updateUser.Rfid = sql.NullString{String: fisUser.Rfid, Valid: true}
+				db.Where("OID = ?", updateUser.OID).Save(&updateUser)
 				noOfUpdatedUsers++
 			} else {
 				noOfSameUsers++
@@ -298,12 +294,11 @@ func importUsersToZapsi(db *gorm.DB) {
 			logInfo("MAIN", "["+strconv.Itoa(fisUser.IDZ)+"] "+fisUser.Jmeno+" "+fisUser.Prijmeni+": adding new user with  rfid ["+fisUser.Rfid+"]")
 			var newUser User
 			newUser.Login = strconv.Itoa(fisUser.IDZ)
-			newUser.Name = fisUser.Prijmeni
-			newUser.FirstName = fisUser.Jmeno
-			newUser.Rfid = fisUser.Rfid
-			newUser.UserRoleId = 2
-			// TODO: enable save
-			//db.Save(&newUser)
+			newUser.Name = sql.NullString{String: fisUser.Prijmeni, Valid: true}
+			newUser.FirstName = sql.NullString{String: fisUser.Jmeno, Valid: true}
+			newUser.Rfid = sql.NullString{String: fisUser.Rfid, Valid: true}
+			newUser.UserRoleID = 2
+			db.Create(&newUser)
 			noOfInsertedUsers++
 		}
 	}
