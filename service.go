@@ -18,6 +18,7 @@ func exportStatePowerOffFromZapsi(db *gorm.DB) {
 	for _, fisProductionOffline := range fisProductionOfflines {
 		cachedFisProductionOfflines[int(fisProductionOffline.ZapsiId.Int32)] = fisProductionOffline
 	}
+	noOfExportedPoweroffs := 0
 	for _, workplaceState := range workplaceStates {
 		_, stateExported := cachedFisProductionOfflines[workplaceState.OID]
 		if !stateExported {
@@ -31,9 +32,10 @@ func exportStatePowerOffFromZapsi(db *gorm.DB) {
 			fisProduction.IFS = sql.NullString{String: workplace.Code, Valid: true}
 			fisProduction.Stav = sql.NullString{String: "v", Valid: true}
 			db.Create(&fisProduction)
+			noOfExportedPoweroffs++
 		}
 	}
-	logInfo("MAIN", "Exporting poweroff states ended in "+time.Since(start).String())
+	logInfo("MAIN", "Exported "+strconv.Itoa(noOfExportedPoweroffs)+" new poweroff states in "+time.Since(start).String())
 }
 
 func exportIdlesFromZapsi(db *gorm.DB) {
@@ -47,6 +49,7 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 	for _, fisProductionIdle := range fisProductionIdles {
 		cachedFisProductionIdles[int(fisProductionIdle.ZapsiId.Int32)] = fisProductionIdle
 	}
+	noOfExportedIdles := 0
 	for _, terminalInputIdle := range terminalInputIdles {
 		_, idleExported := cachedFisProductionIdles[terminalInputIdle.OID]
 		if !idleExported {
@@ -97,9 +100,10 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 			fisProduction.Prostoj = sql.NullString{String: idle.Name, Valid: true}
 			fisProduction.TypProstoje = sql.NullString{String: idleType.Name, Valid: true}
 			db.Create(&fisProduction)
+			noOfExportedIdles++
 		}
 	}
-	logInfo("MAIN", "Exporting idles ended in "+time.Since(start).String())
+	logInfo("MAIN", "Exported "+strconv.Itoa(noOfExportedIdles)+" new idles in "+time.Since(start).String())
 }
 
 func exportOrdersFromZapsi(db *gorm.DB) {
@@ -113,6 +117,7 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 	for _, fisProductionOrder := range fisProductionOrders {
 		cachedFisProductionOrders[int(fisProductionOrder.ZapsiId.Int32)] = fisProductionOrder
 	}
+	noOfExportedOrders := 0
 	for _, terminalInputOrder := range terminalInputOrders {
 		_, orderExported := cachedFisProductionOrders[terminalInputOrder.OID]
 		if !orderExported {
@@ -158,9 +163,10 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 			fisProduction.Stav = sql.NullString{String: "a", Valid: true}
 			fisProduction.Takt = sql.NullFloat64{Float64: terminalInputOrder.AverageCycle, Valid: true}
 			db.Create(&fisProduction)
+			noOfExportedOrders++
 		}
 	}
-	logInfo("MAIN", "Exporting orders ended in "+time.Since(start).String())
+	logInfo("MAIN", "Exported "+strconv.Itoa(noOfExportedOrders)+" new orders in "+time.Since(start).String())
 }
 
 func importOrdersToZapsi(db *gorm.DB) {
