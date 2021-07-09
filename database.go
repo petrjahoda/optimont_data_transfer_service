@@ -33,7 +33,7 @@ type User struct {
 }
 
 func (User) TableName() string {
-	return "user_new"
+	return "user"
 }
 
 type FisProduct struct {
@@ -57,7 +57,7 @@ type Product struct {
 }
 
 func (Product) TableName() string {
-	return "product_new"
+	return "product"
 }
 
 type FisOrder struct {
@@ -92,7 +92,7 @@ type FisProduction struct {
 }
 
 func (FisProduction) TableName() string {
-	return "fis_production_new"
+	return "fis_production"
 }
 
 type Order struct {
@@ -106,7 +106,7 @@ type Order struct {
 }
 
 func (Order) TableName() string {
-	return "order_new"
+	return "order"
 }
 
 type TerminalInputOrder struct {

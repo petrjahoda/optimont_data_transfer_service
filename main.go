@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const version = "2021.3.1.8"
+const version = "2021.3.1.9"
 const serviceName = "Optimont data transfer service"
 const serviceDescription = "Transfers data between zapsi and optimont tables"
 
