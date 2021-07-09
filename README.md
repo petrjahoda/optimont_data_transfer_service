@@ -14,7 +14,7 @@
     - zaznam ma v `zapsi2.workplace.state.DTE` mladsi jak 1440 minut od aktualniho casu a DTE != null
     - id zaznamu neexistuje v tabulce zapsi2.fis_production
 - zmeny v tabulce zapsi2.fis_production oproti aktualnimu stavu
-    - nove sloupce: `ZapsiId`, `IFS`, `Stav`, `Takt`, `Prostoj`, `TypProstoje`, `Chyba`
+    - nove sloupce: `ZapsiId`, `Stav`, `Takt`, `Prostoj`, `TypProstoje`, `Chyba`
     - odstranene sloupce: `TerminalInputOrderId`, `IDVC`, `IDOper`
       <br><br>
 
@@ -95,7 +95,7 @@
 | DTS                                              | DatumCasOd                  | 
 | DTE                                              | DatumCasDo                  | 
 | UserID == user.ID -> user.Login                  | ***IDZ                      | 
-| DeviceID == workplace.DeviceId -> workplace.Code | IFS                         | 
+| DeviceID == workplace.DeviceId -> workplace.Code | IDS                         | 
 | OrderID == order.ID -> order.Barcode             | ****IDFis                   | 
 | Count-Fail                                       | MnozstviOK                  | 
 | Fail                                             | MnozstviNOK                 | 
@@ -130,7 +130,7 @@ kontrole
 | DTS                                                                                                                                                                                                                          | DatumCasOd                  | 
 | DTE                                                                                                                                                                                                                          | DatumCasDo                  | 
 | UserID == user.ID -> user.Login                                                                                                                                                                                              | ***IDZ                      | 
-| DeviceID == workplace.DeviceId -> workplace.Code                                                                                                                                                                             | IFS                         | 
+| DeviceID == workplace.DeviceId -> workplace.Code                                                                                                                                                                             | IDS                         | 
 | ID == terminal_input_order_terminal_input_idle.TerminalInputIdleID -> terminal_input_order_terminal_input_idle.TerminalInputOrderID == terminal_input_order.ID ->  terminal_input_order.OrderID == Order.ID -> Order.Barcode | ****IDFis                   | 
 | null                                                                                                                                                                                                                         | MnozstviOK                  | 
 | null                                                                                                                                                                                                                         | MnozstviNOK                 | 

@@ -30,7 +30,7 @@ func exportStatePowerOffFromZapsi(db *gorm.DB) {
 			var workplace Workplace
 			db.Where("OID = ?", workplaceState.WorkplaceID).Find(&workplace)
 			code, _ := strconv.Atoi(workplace.Code)
-			fisProduction.IDS = sql.NullInt32{Int32: int32(code), Valid: false}
+			fisProduction.IDS = sql.NullInt32{Int32: int32(code), Valid: true}
 			fisProduction.Stav = sql.NullString{String: "v", Valid: true}
 			db.Create(&fisProduction)
 			noOfExportedPoweroffs++
@@ -76,7 +76,7 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputIdle.DeviceID).Find(&workplace)
 			code, _ := strconv.Atoi(workplace.Code)
-			fisProduction.IDS = sql.NullInt32{Int32: int32(code), Valid: false}
+			fisProduction.IDS = sql.NullInt32{Int32: int32(code), Valid: true}
 			var terminalInputOrderIdle TerminalInputOrderIdle
 			db.Where("TerminalInputIdleID = ?", terminalInputIdle.OID).Find(&terminalInputOrderIdle)
 			var terminalInputOrder TerminalInputOrder
@@ -145,7 +145,7 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputOrder.DeviceID).Find(&workplace)
 			code, _ := strconv.Atoi(workplace.Code)
-			fisProduction.IDS = sql.NullInt32{Int32: int32(code), Valid: false}
+			fisProduction.IDS = sql.NullInt32{Int32: int32(code), Valid: true}
 			var zapsiOrder Order
 			db.Where("OID = ?", terminalInputOrder.OrderID).Find(&zapsiOrder)
 			if zapsiOrder.OID > 0 {
