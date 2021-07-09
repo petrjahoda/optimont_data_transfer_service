@@ -83,7 +83,6 @@ type FisProduction struct {
 	KgOK        sql.NullInt32   `gorm:"column:KgOK"`
 	KgNOK       sql.NullInt32   `gorm:"column:KgNOK"`
 	ZapsiId     sql.NullInt32   `gorm:"column:ZapsiID"`
-	IFS         sql.NullString  `gorm:"column:IFS"`
 	Stav        sql.NullString  `gorm:"column:Stav"`
 	Takt        sql.NullFloat64 `gorm:"column:Takt"`
 	Prostoj     sql.NullString  `gorm:"column:Prostoj"`

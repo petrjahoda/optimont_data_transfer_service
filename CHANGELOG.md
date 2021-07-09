@@ -14,11 +14,15 @@ to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+
 ## [2021.3.1.9] - 2021-07-09
 
 ### Changed
 
 - Proper (final) table names
+
+### Fixed
+- Removed IFS, workplaceCode saved to IDS 
 
 ## [2021.3.1.8] - 2021-07-08
 

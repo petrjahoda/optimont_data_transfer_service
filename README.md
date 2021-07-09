@@ -164,7 +164,7 @@ kontrole
 | DTS                                              | DatumCasOd                  | 
 | DTE                                              | DatumCasDo                  | 
 | null                                             | IDZ                         | 
-| WorkplaceId == workplace.ID -> workplace.Code    | IFS                         | 
+| WorkplaceId == workplace.ID -> workplace.Code    | IDS                         | 
 | null                                             | IDFis                       | 
 | null                                             | MnozstviOK                  | 
 | null                                             | MnozstviNOK                 | 
