@@ -69,9 +69,11 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 					fisProduction.IDZ = sql.NullInt32{Int32: int32(idz), Valid: true}
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputIdle.OID)+" has user with login "+zapsiUser.Login+" that is not in fis table, error")
-					fisProduction.IDZ = sql.NullInt32{Valid: true}
+					fisProduction.IDZ = sql.NullInt32{Int32: int32(0), Valid: true}
 					fisProduction.Chyba = sql.NullString{String: zapsiUser.Login, Valid: true}
 				}
+			} else {
+				fisProduction.IDZ = sql.NullInt32{Valid: false}
 			}
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputIdle.DeviceID).Find(&workplace)
@@ -138,9 +140,11 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 					fisProduction.IDZ = sql.NullInt32{Int32: int32(idz), Valid: true}
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputOrder.OID)+" has user with login "+zapsiUser.Login+" that is not in fis table, error")
-					fisProduction.IDZ = sql.NullInt32{Valid: true}
+					fisProduction.IDZ = sql.NullInt32{Int32: int32(0), Valid: true}
 					fisProduction.Chyba = sql.NullString{String: zapsiUser.Login, Valid: true}
 				}
+			} else {
+				fisProduction.IDZ = sql.NullInt32{Valid: false}
 			}
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputOrder.DeviceID).Find(&workplace)

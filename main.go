@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const version = "2021.3.1.10"
+const version = "2021.3.1.13"
 const serviceName = "Optimont data transfer service"
 const serviceDescription = "Transfers data between zapsi and optimont tables"
 
@@ -75,9 +75,9 @@ func (p *program) run() {
 		importUsersToZapsi(db)
 		importProductsToZapsi(db)
 		importOrdersToZapsi(db)
-		//exportOrdersFromZapsi(db)
-		//exportIdlesFromZapsi(db)
-		//exportStatePowerOffFromZapsi(db)
+		exportOrdersFromZapsi(db)
+		exportIdlesFromZapsi(db)
+		exportStatePowerOffFromZapsi(db)
 		sqlDB.Close()
 		sleepTime := downloadInSeconds*time.Second - time.Since(start)
 		logInfo("MAIN", "Sleeping for "+sleepTime.String())
