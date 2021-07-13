@@ -72,8 +72,6 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 					fisProduction.IDZ = sql.NullInt32{Int32: int32(0), Valid: true}
 					fisProduction.Chyba = sql.NullString{String: zapsiUser.Login, Valid: true}
 				}
-			} else {
-				fisProduction.IDZ = sql.NullInt32{Valid: false}
 			}
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputIdle.DeviceID).Find(&workplace)
@@ -89,10 +87,11 @@ func exportIdlesFromZapsi(db *gorm.DB) {
 				var fisOrder FisOrder
 				db.Where("ID = ?", zapsiOrder.Barcode).Find(&fisOrder)
 				if fisOrder.ID > 0 {
-					fisProduction.IDFis, _ = strconv.Atoi(zapsiOrder.Barcode)
+					idFis, _ := strconv.Atoi(zapsiOrder.Barcode)
+					fisProduction.IDFis = sql.NullInt32{Int32: int32(idFis), Valid: true}
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputOrder.OID)+" has order with barcode "+zapsiOrder.Barcode+" that is not in fis table, error")
-					fisProduction.IDFis = 0
+					fisProduction.IDFis = sql.NullInt32{Int32: int32(0), Valid: true}
 					fisProduction.Chyba = sql.NullString{String: fisProduction.Chyba.String + "," + zapsiOrder.Barcode, Valid: true}
 				}
 			}
@@ -143,8 +142,6 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 					fisProduction.IDZ = sql.NullInt32{Int32: int32(0), Valid: true}
 					fisProduction.Chyba = sql.NullString{String: zapsiUser.Login, Valid: true}
 				}
-			} else {
-				fisProduction.IDZ = sql.NullInt32{Valid: false}
 			}
 			var workplace Workplace
 			db.Where("DeviceId = ?", terminalInputOrder.DeviceID).Find(&workplace)
@@ -156,10 +153,11 @@ func exportOrdersFromZapsi(db *gorm.DB) {
 				var fisOrder FisOrder
 				db.Where("ID = ?", zapsiOrder.Barcode).Find(&fisOrder)
 				if fisOrder.ID > 0 {
-					fisProduction.IDFis, _ = strconv.Atoi(zapsiOrder.Barcode)
+					idFis, _ := strconv.Atoi(zapsiOrder.Barcode)
+					fisProduction.IDFis = sql.NullInt32{Int32: int32(idFis), Valid: true}
 				} else {
 					logInfo("MAIN", "Order with ID "+strconv.Itoa(terminalInputOrder.OID)+" has order with barcode "+zapsiOrder.Barcode+" that is not in fis table, error")
-					fisProduction.IDFis = 0
+					fisProduction.IDFis = sql.NullInt32{Int32: int32(0), Valid: true}
 					fisProduction.Chyba = sql.NullString{String: fisProduction.Chyba.String + "," + zapsiOrder.Barcode, Valid: true}
 				}
 			}

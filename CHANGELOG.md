@@ -16,9 +16,13 @@ to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 
 ## [2021.3.1.13] - 2021-07-13
 
-### Fixed
-- Proper saving IDZ NULL
+### Changed
 
+- IDFis change to sql.NullInt32
+
+### Fixed
+
+- Proper saving IDZ and IDFis NULL
 
 ## [2021.3.1.9] - 2021-07-09
 
@@ -27,7 +31,8 @@ to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 - Proper (final) table names
 
 ### Fixed
-- Removed IFS, workplaceCode saved to IDS 
+
+- Removed IFS, workplaceCode saved to IDS
 
 ## [2021.3.1.8] - 2021-07-08
 

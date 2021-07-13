@@ -73,7 +73,7 @@ func (FisOrder) TableName() string {
 
 type FisProduction struct {
 	Id          int             `gorm:"column:Id"`
-	IDFis       int             `gorm:"column:IDFis"`
+	IDFis       sql.NullInt32   `gorm:"column:IDFis"`
 	DatumCasOd  time.Time       `gorm:"column:DatumCasOd"`
 	DatumCasDo  time.Time       `gorm:"column:DatumCasDo"`
 	IDZ         sql.NullInt32   `gorm:"column:IDZ"`
